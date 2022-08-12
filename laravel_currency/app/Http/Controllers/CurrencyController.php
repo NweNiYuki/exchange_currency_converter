@@ -9,16 +9,35 @@ class CurrencyController extends Controller
 {
     public function index()
     {
-        return view('index');
+        return view('index',[
+            'codes' => Currency::rates()->latest()->get()
+        ]);
     }
 
-    public function convert()
+    public function convert(Request $request)
         {
-            $currency = Currency::convert()
-                        ->from('USD')
-                        ->to('EUR')
+            $request->validate([
+                'amount' => 'numeric|min:0',
+                'from'   => 'required',
+                'to'     => 'required'
+            ]);
+            $converted = Currency::convert()
+                        ->from($request->from)
+                        ->to($request->to)
+                        ->amount($request->amount)
+                        ->round(2)
                         ->get();
-                        dd($currency);
+
+                        return back()->with([
+                            'conversion' =>$request->amount. ' ' . $request->from.' is equal to '. $converted. ' ' .$request->to,
+                            'amount' => $request->amount,
+                            'from'   => $request->from,
+                            'to'     => $request->to
+
+                        ]);
+                        
+
         }
     
 }
+ 

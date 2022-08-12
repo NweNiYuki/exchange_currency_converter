@@ -14,6 +14,7 @@
         <div>
             <label for="amount" class="mb-3 text-black">Amount</label>
             <input 
+            value="{{ @session('amount')}}"
             type="text"
             name="amount"
             placeholder="1.00"
@@ -25,9 +26,11 @@
             <select 
             name="from"
             >
-            <option>
-                EUR
+            @foreach ($codes as $code=> $value)
+            <option {{ $code == @session('from') || $code == 'EUR' ? 'selected': '' }}>
+                {{ $code }}
             </option>
+            @endforeach
         </select>
         </div>
         <div>
@@ -35,9 +38,12 @@
             <select 
             name="to"
             >
-            <option>
-                USD
+            @foreach ($codes as $code => $value)
+            <option {{ $code == @session('to') || $code == 'USD' ? 'selected': '' }}>
+                {{ $code }}
             </option>
+                
+            @endforeach
         </select>
         </div>
         <div style="float: right text-align">
@@ -48,5 +54,20 @@
 
     </form>
 </div>
+
+    @if (session('conversion'))
+
+    <div style="float: right text-align">
+        {{ session('conversion') }}
+    </div>
+    @elseif ($errors->any())
+     @foreach ($errors->all() as $error)
+         <div style="align-content: center">
+            {{ $error }}
+
+         </div>
+     @endforeach
+    
+    @endif
 </div>
 @endsection
